@@ -79,8 +79,9 @@ app.use(express.static(clientDir));
 function sendApiError(res, error) {
   const status = error.status >= 400 && error.status < 600 ? error.status : 500;
   const messages = {
-    EMPTY_RESPONSE: '上游接口返回空响应，请尝试点击右上角菜单中的“生成新的设备ID”后重试',
-    DEVICE_REGISTRATION_FAILED: '播放设备注册暂时失败，请稍后重试',
+    EMPTY_RESPONSE: require('./native/playback-errors').EMPTY_RESPONSE,
+    AUTH_REJECTED: require('./native/playback-errors').AUTH_REJECTED,
+    DEVICE_REGISTRATION_FAILED: require('./native/playback-errors').DEVICE_REGISTRATION_FAILED,
     ETIMEDOUT: '上游请求超时，请稍后重试',
     SECURITY_BLOCKED: '视频源地址未通过安全检查',
     EACCES: '无法访问本地数据目录，请检查写入权限',
@@ -138,7 +139,7 @@ app.post('/api/device/reset', async (_req, res) => {
     logger.info('Device', '收到用户主动更换设备指令，开始注册全新的独立匿名设备...');
     const newDevice = await getPlaybackDevice.rotateDevice(requestJson);
     danmakuService.resetDanmakuCache();
-    logger.info('Device', `新设备生成成功: device_id=${newDevice.device_id}, iid=${newDevice.iid}`);
+    logger.info('Device', '新设备生成成功');
     res.set('Cache-Control', 'no-store');
     res.json({
       success: true,

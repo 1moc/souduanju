@@ -39,3 +39,23 @@ test('logger formats, appends, rotates, and reads recent logs', () => {
     fs.rmSync(tempDir, { recursive: true, force: true });
   }
 });
+
+test('logger redacts device identifiers and cookies', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'hongguo-log-redact-'));
+  try {
+    const logger = new Logger({ logDir: tempDir, maxSizeBytes: 1024 * 1024 });
+    logger.info('PlaybackDevice', 'device_id=1111222233334444 iid=5555666677778888', {
+      cookie: 'install_id=secret; store-region=cn',
+      device_key: 'abc123',
+    });
+    const redacted = fs.readFileSync(logger.getLogFilePath(), 'utf8');
+    assert.match(redacted, /device_id=\[redacted\]/);
+    assert.match(redacted, /iid=\[redacted\]/);
+    assert.match(redacted, /"cookie":"\[redacted\]"/);
+    assert.match(redacted, /"device_key":"abc123"/);
+    assert.doesNotMatch(redacted, /1111222233334444/);
+    assert.doesNotMatch(redacted, /install_id=secret/);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});

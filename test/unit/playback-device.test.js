@@ -377,3 +377,25 @@ test('handles new user with no device.json by registering and persisting', async
     fs.rmSync(tmpDir, { recursive: true, force: true });
   }
 });
+
+test('registration failure does not persist a device or touch watch history', async () => {
+  const os = require('node:os');
+  const path = require('node:path');
+  const fs = require('node:fs');
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'hg-dev-reg-fail-'));
+  const history = path.join(tmpDir, 'user_data.json');
+  fs.writeFileSync(history, '{"history":{"1":{"series_id":"1"}},"favorites":{}}');
+  try {
+    let calls = 0;
+    const getDevice = createPlaybackDeviceRegistrar({ persist: true, dataDir: tmpDir });
+    await assert.rejects(getDevice(async () => {
+      calls++;
+      throw Object.assign(new Error('empty'), { code: 'EMPTY_RESPONSE' });
+    }), error => error.code === 'DEVICE_REGISTRATION_FAILED');
+    assert.equal(calls, 3);
+    assert.equal(fs.existsSync(path.join(tmpDir, 'device.json')), false);
+    assert.equal(fs.readFileSync(history, 'utf8'), '{"history":{"1":{"series_id":"1"}},"favorites":{}}');
+  } finally {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  }
+});

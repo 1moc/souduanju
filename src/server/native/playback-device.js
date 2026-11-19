@@ -10,6 +10,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const logger = require('../services/logger');
 const { createJar, applyCookies, cookieInfo, cookieState, deviceKey, PLAYBACK_URL } = require('./device-session');
+const { DEVICE_REGISTRATION_FAILED } = require('./playback-errors');
 
 const REGISTER_URL = 'https://log5-applog-lf.fqnovel.com/service/2/device_register/?tt_data=a&cronet_version=8d40f833_2026-03-03&ttnet_version=4.2.243.31-douyin&use_store_region_cookie=1';
 const KDF_SALT = Buffer.from('4dd4c2e6b83162090e52b3c7a6733ba41cb2462b829ab58a196b39db57177524f49baf7f08e8d68d26a72e37c1a95a2f1f05a51892aef2949732b62a38aadd58', 'hex');
@@ -182,11 +183,11 @@ function createPlaybackDeviceRegistrar(options = {}) {
             // 而是触发在线注册以平滑迁移升级至独有注册设备
             if (loaded && loaded.device_id !== DEFAULT_VERIFIED_DEVICE.device_id) {
                 currentDevice = loaded;
-                logger.info('PlaybackDevice', `已加载本地持久化设备: device_id=${currentDevice.device_id}, iid=${currentDevice.iid}`);
+                logger.info('PlaybackDevice', `已加载本地持久化设备: key=${deviceKey(currentDevice)}`);
                 return Promise.resolve(currentDevice);
             }
             if (loaded && loaded.device_id === DEFAULT_VERIFIED_DEVICE.device_id) {
-                logger.info('PlaybackDevice', `检测到老用户本地使用基准静态设备 (device_id=${loaded.device_id})，准备自动迁移升级为独立注册设备...`);
+                logger.info('PlaybackDevice', '检测到本地占位设备，准备注册独立设备；观看记录不会被清除');
             }
         }
         if (rotation) return waitForRegistration(rotation, signal);
@@ -195,7 +196,7 @@ function createPlaybackDeviceRegistrar(options = {}) {
         registration ||= Promise.resolve().then(async () => {
             const req = requestJson || require('./app-source').requestJson;
             request ||= createRegistrationRequest();
-            logger.info('PlaybackDevice', `开始匿名设备注册, cdid=${request.cdid}`);
+            logger.info('PlaybackDevice', '开始匿名设备注册');
             const deadline = Date.now() + 8000;
             for (let attempt = 0; attempt < 3; attempt++) {
                 try {
@@ -235,7 +236,7 @@ function createPlaybackDeviceRegistrar(options = {}) {
                     if (persist) {
                         savePersistedDevice(deviceFilePath, currentDevice);
                     }
-                    logger.info('PlaybackDevice', `匿名设备注册成功: device_id=${device_id}, iid=${iid}`);
+                    logger.info('PlaybackDevice', `匿名设备注册成功: key=${deviceKey(currentDevice)}`);
                     return currentDevice;
                 } catch (error) {
                     if (attempt === 2 || !retryable(error) || Date.now() >= deadline) throw error;
@@ -246,7 +247,7 @@ function createPlaybackDeviceRegistrar(options = {}) {
             registration = undefined;
             const reason = error.status ? `HTTP ${error.status}` : error.code || 'INVALID_RESPONSE';
             logger.error('PlaybackDevice', `匿名设备注册失败: ${reason}`);
-            throw Object.assign(new Error(`匿名播放设备注册失败（${reason}），请稍后重试`), {
+            throw Object.assign(new Error(`${DEVICE_REGISTRATION_FAILED}（${reason}）`), {
                 code: 'DEVICE_REGISTRATION_FAILED', cause: error,
             });
         });
@@ -344,7 +345,7 @@ function createPlaybackDeviceRegistrar(options = {}) {
         if (persist) {
             savePersistedDevice(deviceFilePath, DEFAULT_VERIFIED_DEVICE);
         }
-        logger.info('PlaybackDevice', `已自动切换并持久化基准播放设备: device_id=${currentDevice.device_id}`);
+        logger.info('PlaybackDevice', '已切换到占位设备标记，不会把它当作可播放身份');
         return currentDevice;
     };
     registrar.reset = function resetPlaybackDevice(expectedDevice) {
