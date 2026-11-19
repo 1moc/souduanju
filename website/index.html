@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>搜短剧 — macOS 与 Windows 桌面播放器</title>
+  <meta name="description" content="搜短剧是 macOS Apple Silicon、macOS Intel 和 Windows x64 的桌面播放器。下载最新稳定版安装包。不是红果官方客户端。macOS 安装包未公证，Windows 安装包未正式签名。">
+  <meta name="theme-color" content="#14110f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="搜短剧 — macOS 与 Windows 桌面播放器">
+  <meta property="og:description" content="浏览榜单、检索剧目并在桌面上连续播放。下载页会跟随最新稳定版。安装包没有公证，也没有正式代码签名。">
+  <meta property="og:url" content="https://github.com/1moc/souduanju">
+  <meta property="og:image" content="https://raw.githubusercontent.com/1moc/souduanju/main/src/client/assets/app-icon.png">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#content">跳到主要内容</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#content">
+        <img src="media/app-icon.png" width="36" height="36" alt="">
+        搜短剧
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">菜单</button>
+      <nav id="site-nav" class="nav-links" aria-label="页内">
+        <a href="#download">下载</a>
+        <a href="#screens">界面</a>
+        <a href="#use">使用</a>
+        <a href="#faq">问题</a>
+        <a href="#source">来源</a>
+        <a class="nav-download" href="#download">获取安装包</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="ring" aria-hidden="true"></div>
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow">桌面播放器</p>
+          <h1 id="hero-title">短剧，留在自己的桌面上。</h1>
+          <p class="lede">搜短剧是 macOS 与 Windows 的桌面播放器。可以浏览热门榜和新剧榜，检索剧目，连续播放，并在本机记住进度。它不是红果官方客户端，也没有账号登录。</p>
+          <div class="hero-actions">
+            <a class="button primary" data-asset="-mac-arm64.dmg" href="https://github.com/1moc/souduanju/releases/latest">
+              <strong>macOS Apple Silicon</strong>
+              <small>最新 dmg</small>
+            </a>
+            <a class="button ghost" data-asset="-mac-x64.dmg" href="https://github.com/1moc/souduanju/releases/latest">
+              <strong>macOS Intel</strong>
+              <small>最新 dmg</small>
+            </a>
+            <a class="button ghost" data-asset="-win-x64-setup.exe" href="https://github.com/1moc/souduanju/releases/latest">
+              <strong>Windows 安装版</strong>
+              <small>最新 setup.exe</small>
+            </a>
+          </div>
+        </div>
+        <div class="stage">
+          <figure>
+            <img src="media/theater.png" width="1440" height="900" alt="播放界面截图：中间是竖屏画面，右侧是分集列表。窗口标题仍显示上游名称红果开源播放器。">
+            <figcaption>播放与选集。截图来自仓库中的客户端界面，窗口标题仍是上游名称「红果开源播放器」。当前安装包的应用名是搜短剧。</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="download" aria-labelledby="download-title">
+      <div class="wrap">
+        <p class="eyebrow">最新稳定版</p>
+        <h2 id="download-title">按系统和芯片下载</h2>
+        <p class="intro">按钮会指向最新 Release 里对应后缀的安装包。脚本尚未取到文件名时，点击会打开<a href="https://github.com/1moc/souduanju/releases/latest">发布页</a>，因此以后的版本号变化不会把链接变成失效的旧文件名。zip 包也在该页。</p>
+        <div class="download-grid">
+          <article class="card">
+            <h3>Mac · Apple Silicon</h3>
+            <p>M 系列芯片。安装镜像，拖入「应用程序」。</p>
+            <a class="button ink" data-asset="-mac-arm64.dmg" href="https://github.com/1moc/souduanju/releases/latest"><strong>下载 dmg</strong><small>最新的 mac-arm64.dmg</small></a>
+          </article>
+          <article class="card">
+            <h3>Mac · Intel</h3>
+            <p>Intel 芯片的 x64 安装镜像。</p>
+            <a class="button ink" data-asset="-mac-x64.dmg" href="https://github.com/1moc/souduanju/releases/latest"><strong>下载 dmg</strong><small>最新的 mac-x64.dmg</small></a>
+          </article>
+          <article class="card">
+            <h3>Windows 安装版</h3>
+            <p>x64 安装向导。可选目录，并创建桌面和开始菜单快捷方式。</p>
+            <a class="button ink" data-asset="-win-x64-setup.exe" href="https://github.com/1moc/souduanju/releases/latest"><strong>下载安装程序</strong><small>最新的 win-x64-setup.exe</small></a>
+          </article>
+          <article class="card">
+            <h3>Windows 便携版</h3>
+            <p>x64 单文件。不写安装目录，双击运行。</p>
+            <a class="button ink" data-asset="-win-x64-portable.exe" href="https://github.com/1moc/souduanju/releases/latest"><strong>下载便携版</strong><small>最新的 win-x64-portable.exe</small></a>
+          </article>
+        </div>
+        <p><a class="button line" href="https://github.com/1moc/souduanju/releases/latest"><strong>zip、校验和与发布说明</strong><small>github.com/1moc/souduanju/releases</small></a></p>
+        <aside class="note" aria-labelledby="sign-title">
+          <h3 id="sign-title">这些安装包没有公证，也没有正式签名</h3>
+          <p>macOS 包只有 ad-hoc 签名，没有 Apple Developer ID，也没有经过公证。系统可能提示应用「已损坏」或无法打开。请先确认文件来自上面的 Release，并用发布页里的 <a href="https://github.com/1moc/souduanju/releases/latest/download/SHA256SUMS.txt">SHA256SUMS.txt</a> 核对。</p>
+          <p>如果只是下载隔离标记导致，可以在终端执行 <code>xattr -dr com.apple.quarantine "/Applications/搜短剧.app"</code>。这只去掉该应用的隔离标记。系统若提示恶意软件，或重新下载后仍怀疑文件被改过，不要运行这条命令。参见 <a href="https://support.apple.com/zh-cn/102445">Apple 的打开应用说明</a>。</p>
+          <p>Windows 包没有 Authenticode 签名。SmartScreen 可能显示「Windows 已保护你的电脑」。这是未签名程序的系统提示，不表示安装包已经签名。</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="screens" aria-labelledby="screen-title">
+      <div class="wrap">
+        <p class="eyebrow">界面</p>
+        <h2 id="screen-title">榜单、演员和详情</h2>
+        <p class="intro">下面三张图都是仓库里的客户端界面截图，不是重新绘制的示意。画面中的剧目属于原权利人，本站不提供这些视频文件。图中窗口标题仍显示上游名称。</p>
+        <div class="gallery">
+          <figure>
+            <img src="media/catalog.png" width="1440" height="900" alt="热门榜界面截图：分类标签和剧目海报网格。" loading="lazy">
+            <figcaption>热门榜与分类。</figcaption>
+          </figure>
+          <div class="stack">
+            <figure>
+              <img src="media/actors.png" width="1200" height="800" alt="剧星榜界面截图：演员卡片按排名排列。" loading="lazy">
+              <figcaption>剧星榜。</figcaption>
+            </figure>
+            <figure>
+              <img src="media/detail.png" width="1200" height="800" alt="短剧详情界面截图。" loading="lazy">
+              <figcaption>短剧详情。</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features" aria-labelledby="feature-title">
+      <div class="wrap">
+        <p class="eyebrow">能做什么</p>
+        <h2 id="feature-title">当前版本里已有的功能</h2>
+        <div class="feature-grid">
+          <article class="feature"><span>01</span><h3>热门榜和新剧榜</h3><p>按分类浏览剧目，从海报和简介里挑选。</p></article>
+          <article class="feature"><span>02</span><h3>找剧</h3><p>搜索剧名、演员或题材。最近 10 条搜索留在本机，可以单条删除或清空。</p></article>
+          <article class="feature"><span>03</span><h3>剧星榜</h3><p>查看演员并进入主页，从作品开始播放。</p></article>
+          <article class="feature"><span>04</span><h3>选集和系列</h3><p>分集播放、自动下一集。多季剧可以按季排序后切换。</p></article>
+          <article class="feature"><span>05</span><h3>弹幕</h3><p>可以开关，并调整行数、速度和不透明度。弹幕组件是 MIT 许可。</p></article>
+          <article class="feature"><span>06</span><h3>历史、收藏和小窗</h3><p>记住剧集和进度。播放时打开其他页面，视频暂停并缩到右下角。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="use" aria-labelledby="use-title">
+      <div class="wrap">
+        <p class="eyebrow">使用</p>
+        <h2 id="use-title">三步开始</h2>
+        <div class="step-grid">
+          <article class="step"><strong>1</strong><h3>认准芯片</h3><p>苹果芯片选 Apple Silicon，Intel Mac 选 Intel，Windows 选 x64 安装版或便携版。没有 Linux 安装包。</p></article>
+          <article class="step"><strong>2</strong><h3>安装</h3><p>macOS 打开 dmg，把「搜短剧」拖进「应用程序」。Windows 安装版按向导安装；便携版直接运行。</p></article>
+          <article class="step"><strong>3</strong><h3>观看</h3><p>从榜单或搜索进入。空格或 <kbd>K</kbd> 暂停，<kbd>↑</kbd> <kbd>↓</kbd> 换集，<kbd>←</kbd> <kbd>→</kbd> 快退快进 5 秒，<kbd>F</kbd> 或双击画面全屏，<kbd>J</kbd> 收起选集，<kbd>M</kbd> 静音。</p></article>
+        </div>
+        <p class="intro">观看历史、收藏、搜索和偏好只写在本机。macOS 在「~/Library/Application Support/搜短剧/data/」，Windows 在「%APPDATA%\搜短剧\data\」。应用不会自动覆盖安装；菜单里的「检查更新」会打开对应的发布说明或安装包。</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq" aria-labelledby="faq-title">
+      <div class="wrap">
+        <p class="eyebrow">常见问题</p>
+        <h2 id="faq-title">安装和播放时会遇到的事</h2>
+        <div class="faq">
+          <details class="faq-item">
+            <summary>macOS 提示应用已损坏</summary>
+            <p>安装包没有公证，Gatekeeper 可能拦截。先核对 Release 和 SHA256。隔离标记的处理见下载一节，不要把它理解成正式签名。</p>
+          </details>
+          <details class="faq-item">
+            <summary>Windows 被 SmartScreen 拦住</summary>
+            <p>安装包没有正式代码签名。只从本仓库 Release 下载，并核对 SHA256。</p>
+          </details>
+          <details class="faq-item">
+            <summary>检查更新说尚未设置更新仓库</summary>
+            <p>这表示当前运行的不是写入了仓库名的正式安装包，例如在源码目录执行 npm run app。</p>
+          </details>
+          <details class="faq-item">
+            <summary>榜单或播放打不开</summary>
+            <p>节目来自第三方公开接口，是否可看会变化。本仓库不保存剧集文件。</p>
+          </details>
+          <details class="faq-item">
+            <summary>有没有手机版或 Linux 安装包</summary>
+            <p>没有。安装包只覆盖 macOS Apple Silicon、macOS Intel 和 Windows x64。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="source" aria-labelledby="source-title">
+      <div class="wrap">
+        <p class="eyebrow">开源</p>
+        <h2 id="source-title">来源、许可证和内容边界</h2>
+        <div class="license-grid">
+          <article>
+            <h3>代码从哪里来</h3>
+            <p>本仓库是 <a href="https://github.com/1moc/souduanju">1moc/souduanju</a>。代码来自 <a href="https://github.com/zfdang/hongguo-open-player/tree/f57df9c0d980c272714d270bd7065d55fd197de1">zfdang/hongguo-open-player</a> 的提交 <code>f57df9c</code>。应用内版权行保留 Copyright © 2026 zfdang。</p>
+            <p>完整使用说明在 <a href="https://github.com/1moc/souduanju/blob/main/README.md">README</a>。问题可以到 <a href="https://github.com/1moc/souduanju/issues">Issues</a> 反馈。</p>
+            <p><a class="button line" href="https://github.com/1moc/souduanju"><strong>查看源码</strong><small>github.com/1moc/souduanju</small></a></p>
+          </article>
+          <article>
+            <h3>许可</h3>
+            <ul>
+              <li>项目按 <a href="https://github.com/1moc/souduanju/blob/main/LICENSE">GNU AGPL-3.0</a> 发布。</li>
+              <li>弹幕组件 MIT，Copyright © 2014 Zhenye Wei。</li>
+              <li>随包的 ByteVC2 解码器是 GPL-3.0-or-later 的 FFmpeg 构建。</li>
+              <li>部分协议代码保留其原来的 GPL-3.0-only 归属。</li>
+            </ul>
+            <p>剧集、海报和弹幕的版权属于原权利人。本站和仓库都不附带这些媒体文件。页面不说明如何解密或绕过播放限制。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p>搜短剧桌面客户端的项目页。静态页面，不收集个人信息。</p>
+      <p><a href="https://github.com/1moc/souduanju/blob/main/README.md">完整文档</a> · <a href="https://github.com/1moc/souduanju/releases/latest">Release</a></p>
+    </div>
+  </footer>
+  <script src="site.js"></script>
+</body>
+</html>

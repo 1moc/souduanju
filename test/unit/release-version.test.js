@@ -10,6 +10,7 @@ const {
   analyzeCommits,
   bumpVersion,
   resolveReleaseVersion,
+  changesRequireRelease,
 } = require('../../scripts/compute-release-version');
 
 test('parseSemVer handles tags with and without v prefix and rejects invalid tags', () => {
@@ -52,6 +53,9 @@ test('analyzeCommits correctly identifies major, minor, and patch bumps from Con
   assert.equal(analyzeCommits(['']), 'none');
   assert.equal(analyzeCommits(['docs: record assets [skip release]']), 'none');
   assert.equal(analyzeCommits(['docs: record assets [skip release]', 'fix: real']), 'patch');
+  assert.equal(analyzeCommits(['Merge pull request #2 from 1moc/cursor/project-website-b666']), 'none');
+  assert.equal(analyzeCommits(["Merge branch 'cursor/project-website-b666'"]), 'none');
+  assert.equal(analyzeCommits(['Merge pull request #2 from owner/site', 'feat: add playback']), 'minor');
 });
 
 test('bumpVersion correctly resets lower version components', () => {
@@ -60,6 +64,33 @@ test('bumpVersion correctly resets lower version components', () => {
   assert.deepEqual(bumpVersion(base, 'minor'), { major: 1, minor: 3, patch: 0 });
   assert.deepEqual(bumpVersion(base, 'patch'), { major: 1, minor: 2, patch: 4 });
   assert.deepEqual(bumpVersion(base, 'none'), { major: 1, minor: 2, patch: 3 });
+});
+
+test('website and documentation diffs do not require a client release', () => {
+  assert.equal(changesRequireRelease([
+    'website/index.html',
+    'website/media/theater.png',
+    'README.md',
+    '.github/workflows/pages.yml',
+    'scripts/compute-release-version.js',
+    'test/unit/release-version.test.js',
+  ]), false);
+  assert.equal(changesRequireRelease(['website/index.html', 'src/electron/main.js']), true);
+  assert.equal(changesRequireRelease([]), true);
+  assert.equal(changesRequireRelease(null), true);
+});
+
+test('resolveReleaseVersion does not package when only the website changed since the tag', () => {
+  const res = resolveReleaseVersion({
+    ref: 'refs/heads/main',
+    eventName: 'push',
+    previousTag: 'v1.0.1',
+    commits: ['Merge pull request #2 from 1moc/cursor/project-website-b666', 'docs: add project website [skip release]'],
+    changedFiles: ['website/index.html', 'README.md', '.github/workflows/pages.yml'],
+  });
+  assert.equal(res.shouldRelease, false);
+  assert.equal(res.rawVersion, '1.0.1');
+  assert.equal(res.bumpType, 'none');
 });
 
 test('resolveReleaseVersion handles explicit tag push', () => {
