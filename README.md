@@ -123,10 +123,10 @@ npm run build:win
 公开仓库使用标准免费托管 runner，不使用付费的 larger runner。
 
 - [CI](https://github.com/1moc/souduanju/actions/workflows/ci.yml)：拉取请求和 `main` 上运行离线单元测试（Ubuntu 24.04、Windows，Node 20 与 22）。ByteVC2 在拉取请求和手动运行时编译（macOS 15 arm64、macOS 15 Intel、Windows x64）。推送到 `main` 时不再重复编译解码器，以免和发布任务叠在一起。
-- [Build & Release Native Apps](https://github.com/1moc/souduanju/actions/workflows/build-release.yml)：`main` 推送、`v*` 标签和手动运行。任务会计算版本、编译三个架构的解码器、执行 `npm ci` 和单元测试，再用 electron-builder 生成 macOS arm64/x64 与 Windows x64 安装包，连同 `SHA256SUMS.txt` 上传到 Release。
+- [Build & Release Native Apps](https://github.com/1moc/souduanju/actions/workflows/build-release.yml)：`main` 推送、`v*` 标签和手动运行。任务会计算版本，在 Intel Mac 和 Windows 上编译对应解码器，并在打包用的 `macos-latest` 上编译 Apple Silicon 解码器。随后执行 `npm ci` 和单元测试，用 electron-builder 生成 macOS arm64/x64 与 Windows x64 安装包，连同 `SHA256SUMS.txt` 上传到 Release。单独排队的 `macos-15` Apple Silicon 任务曾因托管 runner 容量被取消，所以 Apple Silicon 解码器改在打包任务里编译。
 - [Live API Verification](https://github.com/1moc/souduanju/actions/workflows/live-verification.yml)：只能手动运行。它会访问真实第三方接口，导入源码和日常提交不会自动触发。
 
-还没有旧标签时，`main` 上的普通提交按补丁从 1.0.0 升到 v1.0.1，并且只发布这一次。发布任务用 `GITHUB_TOKEN` 创建的标签不会再启动第二次构建；如果仍出现 `github-actions[bot]` 的标签推送，准备步骤会跳过。手动发布要在 `main` 上运行，不要对着已有标签运行。提交说明中的 `feat:` 会升次版本，`BREAKING CHANGE` 会升主版本。
+还没有旧标签时，`main` 上的普通提交按补丁从 1.0.0 升到 v1.0.1，并且只发布这一次。发布任务用 `GITHUB_TOKEN` 创建的标签不会再启动第二次构建；如果仍出现 `github-actions[bot]` 的标签推送，准备步骤会跳过。手动发布要在 `main` 上运行，不要对着已有标签运行。提交说明中的 `feat:` 会升次版本，`BREAKING CHANGE` 会升主版本。提交说明包含 `[skip release]` 且没有其他需要升版本的提交时，不会再次打包。
 
 ## 相对上游的修改
 

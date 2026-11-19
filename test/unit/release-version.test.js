@@ -50,6 +50,8 @@ test('analyzeCommits correctly identifies major, minor, and patch bumps from Con
   // Empty commits
   assert.equal(analyzeCommits([]), 'none');
   assert.equal(analyzeCommits(['']), 'none');
+  assert.equal(analyzeCommits(['docs: record assets [skip release]']), 'none');
+  assert.equal(analyzeCommits(['docs: record assets [skip release]', 'fix: real']), 'patch');
 });
 
 test('bumpVersion correctly resets lower version components', () => {

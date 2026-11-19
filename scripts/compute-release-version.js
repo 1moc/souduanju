@@ -28,7 +28,7 @@ function analyzeCommits(commitMessages) {
 
   for (const raw of commitMessages) {
     const text = String(raw || '').trim();
-    if (!text) continue;
+    if (!text || text.includes('[skip release]')) continue;
     hasAnyCommit = true;
 
     // 1. Check for Breaking Change:

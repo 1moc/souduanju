@@ -67,9 +67,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-15
-            arch: mac-arm64
-            output: arm64
           - os: macos-15-intel
             arch: mac-x64
             output: x64
@@ -153,20 +150,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Download macOS decoders
+      - name: Restore Apple Silicon decoder cache
+        if: matrix.platform == 'macos'
+        id: cache-arm64
+        uses: actions/cache@v6
+        with:
+          path: build/bytevc2/arm64
+          key: bytevc2-mac-arm64-${{ hashFiles('scripts/build-bytevc2.sh', 'vendor/bytevc2/**') }}
+
+      - name: Build Apple Silicon decoder
+        if: matrix.platform == 'macos' && steps.cache-arm64.outputs.cache-hit != 'true'
+        run: bash scripts/build-bytevc2.sh
+
+      - name: Download Intel decoder
         if: matrix.platform == 'macos'
         uses: actions/download-artifact@v8
         with:
-          pattern: bytevc2-mac-*
-          path: decoder-artifacts
+          name: bytevc2-mac-x64
+          path: build/bytevc2/x64
 
-      - name: Arrange macOS decoders
+      - name: Ensure macOS decoder permissions
         if: matrix.platform == 'macos'
-        run: |
-          mkdir -p build/bytevc2/arm64 build/bytevc2/x64
-          cp decoder-artifacts/bytevc2-mac-arm64/ffmpeg build/bytevc2/arm64/ffmpeg
-          cp decoder-artifacts/bytevc2-mac-x64/ffmpeg build/bytevc2/x64/ffmpeg
-          chmod +x build/bytevc2/{arm64,x64}/ffmpeg
+        run: chmod +x build/bytevc2/arm64/ffmpeg build/bytevc2/x64/ffmpeg
 
       - name: Download Windows decoder
         if: matrix.platform == 'windows'
