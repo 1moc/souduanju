@@ -16,20 +16,21 @@ macOS 与 Windows 桌面播放器，用于浏览和播放短剧。仓库是 <htt
 
 ## 下载与安装
 
-发布页：<https://github.com/1moc/souduanju/releases>
+已发布的稳定版是 [v1.0.1](https://github.com/1moc/souduanju/releases/tag/v1.0.1)。发布页：<https://github.com/1moc/souduanju/releases>
 
-**目前还没有 Release，这里还不能下载安装包。** 源码进入 `main` 后，由 GitHub 免费托管 runner 构建。仓库里还没有历史版本标签时，发布任务把 `package.json` 的 1.0.0 当作基线，再按补丁升到 **v1.0.1**。在 Release 出现之前，不要把任何本地文件当作已经发布的安装包。发布成功后，本节会改成实际版本、文件名和校验值。
+| 文件 | 大小（字节） | SHA256 |
+| --- | ---: | --- |
+| [souduanju-1.0.1-mac-arm64.dmg](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-mac-arm64.dmg) | 130784996 | `6e26772dec2d694924feae3c82fbac4635cad06f3e683a418b55a7cd77241155` |
+| [souduanju-1.0.1-mac-arm64.zip](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-mac-arm64.zip) | 125754141 | `f8bfea6c0d017d1c4131cf434e61631b42ee2d82946967c2e415ee9681f4e906` |
+| [souduanju-1.0.1-mac-x64.dmg](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-mac-x64.dmg) | 138172992 | `c3d4b4f796a35ba3b676f496636cae6782e1fd483eb8e3477f9a79d9cefcd087` |
+| [souduanju-1.0.1-mac-x64.zip](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-mac-x64.zip) | 133124258 | `66fce8d47f36c3e51f3097a7b21ffd6ab32883c52cc9394eada501ff6f8415ee` |
+| [souduanju-1.0.1-win-x64-setup.exe](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-win-x64-setup.exe) | 127397224 | `6a8a59067f534706163d8f9e3d807c65128de9b75f988af41f881519bd40dbc2` |
+| [souduanju-1.0.1-win-x64-portable.exe](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-win-x64-portable.exe) | 115461625 | `2a8984beab6702888bd84d5cd494aed18e1aca1732af175dc5c4ea3a8ad1a77d` |
+| [souduanju-1.0.1-win-x64.zip](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-win-x64.zip) | 162101525 | `0d504474e806f9b8015d3689496751c8984e7000ec5fcb72f50b1a1c26482edc` |
 
-构建配置中的文件名规则是：
+校验文件：[SHA256SUMS.txt](https://github.com/1moc/souduanju/releases/download/v1.0.1/SHA256SUMS.txt)。这些哈希来自发布任务对实际上传文件计算的结果。
 
-- `souduanju-<版本>-mac-arm64.dmg` 和 `.zip`
-- `souduanju-<版本>-mac-x64.dmg` 和 `.zip`
-- `souduanju-<版本>-win-x64-setup.exe`
-- `souduanju-<版本>-win-x64-portable.exe`
-- `souduanju-<版本>-win-x64.zip`
-- `SHA256SUMS.txt`
-
-请用 `SHA256SUMS.txt` 核对下载文件。macOS 将 dmg 里的「搜短剧」拖到「应用程序」。Windows 安装向导可选目录，并创建桌面和开始菜单快捷方式；便携版直接运行；zip 解压后运行 `搜短剧.exe`。
+macOS 将 dmg 里的「搜短剧」拖到「应用程序」。Windows 安装向导可选目录，并创建桌面和开始菜单快捷方式；便携版直接运行；zip 解压后运行 `搜短剧.exe`。`package.json` 里的开发版本仍是 1.0.0，安装包版本由发布任务写成 1.0.1。
 
 这些安装包没有正式签名：
 
