@@ -16,21 +16,21 @@ macOS 与 Windows 桌面播放器，用于浏览和播放短剧。仓库是 <htt
 
 ## 下载与安装
 
-已发布的稳定版是 [v1.0.1](https://github.com/1moc/souduanju/releases/tag/v1.0.1)。发布页：<https://github.com/1moc/souduanju/releases>
+已发布的稳定版是 [v1.0.2](https://github.com/1moc/souduanju/releases/tag/v1.0.2)。发布页：<https://github.com/1moc/souduanju/releases>
 
 | 文件 | 大小（字节） | SHA256 |
 | --- | ---: | --- |
-| [souduanju-1.0.1-mac-arm64.dmg](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-mac-arm64.dmg) | 130784996 | `6e26772dec2d694924feae3c82fbac4635cad06f3e683a418b55a7cd77241155` |
-| [souduanju-1.0.1-mac-arm64.zip](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-mac-arm64.zip) | 125754141 | `f8bfea6c0d017d1c4131cf434e61631b42ee2d82946967c2e415ee9681f4e906` |
-| [souduanju-1.0.1-mac-x64.dmg](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-mac-x64.dmg) | 138172992 | `c3d4b4f796a35ba3b676f496636cae6782e1fd483eb8e3477f9a79d9cefcd087` |
-| [souduanju-1.0.1-mac-x64.zip](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-mac-x64.zip) | 133124258 | `66fce8d47f36c3e51f3097a7b21ffd6ab32883c52cc9394eada501ff6f8415ee` |
-| [souduanju-1.0.1-win-x64-setup.exe](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-win-x64-setup.exe) | 127397224 | `6a8a59067f534706163d8f9e3d807c65128de9b75f988af41f881519bd40dbc2` |
-| [souduanju-1.0.1-win-x64-portable.exe](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-win-x64-portable.exe) | 115461625 | `2a8984beab6702888bd84d5cd494aed18e1aca1732af175dc5c4ea3a8ad1a77d` |
-| [souduanju-1.0.1-win-x64.zip](https://github.com/1moc/souduanju/releases/download/v1.0.1/souduanju-1.0.1-win-x64.zip) | 162101525 | `0d504474e806f9b8015d3689496751c8984e7000ec5fcb72f50b1a1c26482edc` |
+| [souduanju-1.0.2-mac-arm64.dmg](https://github.com/1moc/souduanju/releases/download/v1.0.2/souduanju-1.0.2-mac-arm64.dmg) | 130789214 | `28f3ee9be5199b97306b92c91133939dddbe4dae80ed27d39dc5179a798d0595` |
+| [souduanju-1.0.2-mac-arm64.zip](https://github.com/1moc/souduanju/releases/download/v1.0.2/souduanju-1.0.2-mac-arm64.zip) | 125754963 | `71785f646236f73971d3588448a7d6790fe3f621a997db1d22e694c0bc0218f9` |
+| [souduanju-1.0.2-mac-x64.dmg](https://github.com/1moc/souduanju/releases/download/v1.0.2/souduanju-1.0.2-mac-x64.dmg) | 138169412 | `ffefc57358c95eb27e50d8bfd880ce50f9d6ad02d0c6747a3d1126a5908d8dd5` |
+| [souduanju-1.0.2-mac-x64.zip](https://github.com/1moc/souduanju/releases/download/v1.0.2/souduanju-1.0.2-mac-x64.zip) | 133125083 | `95b2495d816c34f16ff85aa2b91a0c253d524884946f7340e5c003b635c5951f` |
+| [souduanju-1.0.2-win-x64-setup.exe](https://github.com/1moc/souduanju/releases/download/v1.0.2/souduanju-1.0.2-win-x64-setup.exe) | 127397115 | `d6612341f4c73d840e79179b8145b7ea9ff4c26c893ffe21178e16062f74d4ff` |
+| [souduanju-1.0.2-win-x64-portable.exe](https://github.com/1moc/souduanju/releases/download/v1.0.2/souduanju-1.0.2-win-x64-portable.exe) | 115452087 | `04d5dfac3524fff36c6e394407d45f519ea10bbeea266f715c1c28e660056ddf` |
+| [souduanju-1.0.2-win-x64.zip](https://github.com/1moc/souduanju/releases/download/v1.0.2/souduanju-1.0.2-win-x64.zip) | 162102173 | `6df1b838eac3695735e4afc6817ad63e94b91656d166471f31a8965f2ed579d6` |
 
-校验文件：[SHA256SUMS.txt](https://github.com/1moc/souduanju/releases/download/v1.0.1/SHA256SUMS.txt)。这些哈希来自发布任务对实际上传文件计算的结果。
+校验文件：[SHA256SUMS.txt](https://github.com/1moc/souduanju/releases/download/v1.0.2/SHA256SUMS.txt)。这些哈希来自发布任务对实际上传文件计算的结果，并在下载后用 `sha256sum -c` 核对过。
 
-macOS 将 dmg 里的「搜短剧」拖到「应用程序」。Windows 安装向导可选目录，并创建桌面和开始菜单快捷方式；便携版直接运行；zip 解压后运行 `搜短剧.exe`。`package.json` 里的开发版本仍是 1.0.0，安装包版本由发布任务写成 1.0.1。
+从 v1.0.1 升级时，用对应安装包覆盖安装即可。不要删除 `~/Library/Application Support/搜短剧` 或 `%APPDATA%\搜短剧`，观看历史、收藏和已保存的设备都在那里。macOS 将 dmg 里的「搜短剧」拖到「应用程序」。Windows 安装向导可选目录；便携版直接运行；zip 解压后运行 `搜短剧.exe`。`package.json` 里的开发版本仍是 1.0.0，安装包版本由发布任务写成 1.0.2。
 
 这些安装包没有正式签名：
 
