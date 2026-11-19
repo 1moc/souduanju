@@ -28,7 +28,9 @@ function analyzeCommits(commitMessages) {
 
   for (const raw of commitMessages) {
     const text = String(raw || '').trim();
-    if (!text || text.includes('[skip release]')) continue;
+    const subject = text.split('\n')[0];
+    const mergeCommit = /^Merge pull request #\d+ /i.test(subject) || /^Merge branch '/i.test(subject);
+    if (!text || text.includes('[skip release]') || mergeCommit) continue;
     hasAnyCommit = true;
 
     // 1. Check for Breaking Change:
@@ -50,6 +52,36 @@ function analyzeCommits(commitMessages) {
   if (hasFeat) return 'minor';
   if (hasAnyCommit) return 'patch';
   return 'none';
+}
+
+const RELEASE_EXEMPT_FILES = new Set([
+  'README.md',
+  'README.upstream.md',
+  'LICENSE',
+  '.github/workflows/pages.yml',
+  '.github/workflows/ci.yml',
+  '.github/workflows/live-verification.yml',
+  '.github/workflows/build-release.yml',
+  'scripts/compute-release-version.js',
+  'test/unit/release-version.test.js',
+]);
+
+function isReleaseExemptPath(file) {
+  const normalized = String(file || '').trim().replace(/\\/g, '/').replace(/^\.\//, '');
+  if (!normalized) return true;
+  if (RELEASE_EXEMPT_FILES.has(normalized)) return true;
+  return normalized.startsWith('website/')
+    || normalized.startsWith('docs/')
+    || normalized.startsWith('.github/ISSUE_TEMPLATE/');
+}
+
+// Unknown or empty diffs do not suppress a release. A listed diff suppresses
+// one only when every path is documentation, the project site, or release tooling.
+function changesRequireRelease(files) {
+  if (!Array.isArray(files)) return true;
+  const present = files.map(file => String(file).trim()).filter(Boolean);
+  if (present.length === 0) return true;
+  return present.some(file => !isReleaseExemptPath(file));
 }
 
 function bumpVersion(base, bumpType) {
@@ -147,6 +179,7 @@ function resolveReleaseVersion({
   forceBump = process.env.INPUT_FORCE_BUMP || 'auto',
   previousTag = null,
   commits = [],
+  changedFiles = null,
   isTagExisting = null,
 } = {}) {
   validateReleaseRef(ref, eventName);
@@ -167,6 +200,15 @@ function resolveReleaseVersion({
 
   const baseSemVer = parseSemVer(previousTag) || { major: 1, minor: 0, patch: 0 };
   const isManual = eventName === 'workflow_dispatch';
+  if (!isManual && Array.isArray(changedFiles) && !changesRequireRelease(changedFiles)) {
+    return {
+      shouldRelease: false,
+      rawVersion: formatSemVer(baseSemVer),
+      tag: `v${formatSemVer(baseSemVer)}`,
+      bumpType: 'none',
+      previousTag,
+    };
+  }
 
   let bumpType = 'none';
 
@@ -216,6 +258,18 @@ function writeGitHubOutput(key, value) {
   }
 }
 
+function getChangedFilesSince(previousTag, cwd = process.cwd()) {
+  if (!previousTag) return null;
+  try {
+    const out = execFileSync('git', ['diff', '--name-only', `${previousTag}...HEAD`], {
+      cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    return out.split('\n').map(file => file.trim()).filter(Boolean);
+  } catch (_) {
+    return null;
+  }
+}
+
 function main() {
   const cwd = process.cwd();
   const ref = process.env.GITHUB_REF || '';
@@ -228,6 +282,7 @@ function main() {
 
   const previousTag = getPreviousTag(cwd);
   const commits = getCommitsSince(previousTag, cwd);
+  const changedFiles = getChangedFilesSince(previousTag, cwd);
 
   const result = resolveReleaseVersion({
     ref,
@@ -235,6 +290,7 @@ function main() {
     forceBump,
     previousTag,
     commits,
+    changedFiles,
     isTagExisting: tag => checkRemoteTagExists(tag, cwd),
   });
 
@@ -244,6 +300,8 @@ function main() {
   console.log(`  Ref:          ${ref}`);
   console.log(`  Previous Tag: ${result.previousTag || '(none)'}`);
   console.log(`  Commits Count: ${commits.length}`);
+  console.log(`  Changed Files: ${Array.isArray(changedFiles) ? changedFiles.length : '(unknown)'}`);
+  console.log(`  Needs Release Build: ${changesRequireRelease(changedFiles)}`);
   console.log(`  Bump Type:    ${result.bumpType}`);
   console.log(`  Should Release: ${result.shouldRelease}`);
   console.log(`  Target Tag:   ${result.tag}`);
@@ -267,6 +325,9 @@ module.exports = {
   analyzeCommits,
   bumpVersion,
   resolveReleaseVersion,
+  changesRequireRelease,
+  isReleaseExemptPath,
   getPreviousTag,
   getCommitsSince,
+  getChangedFilesSince,
 };

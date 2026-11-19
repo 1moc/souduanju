@@ -4,6 +4,8 @@ macOS 与 Windows 桌面播放器，用于浏览和播放短剧。仓库是 <htt
 
 代码来自 [zfdang/hongguo-open-player](https://github.com/zfdang/hongguo-open-player/tree/f57df9c0d980c272714d270bd7065d55fd197de1) 的提交 `f57df9c0d980c272714d270bd7065d55fd197de1`。应用内版权行保留 **Copyright © 2026 zfdang**。上游说明原文在 [README.upstream.md](README.upstream.md)；那里的应用名、下载地址和 GPL 徽章属于上游仓库，不能当作本仓库的安装包说明。
 
+项目网页的源文件在 [website/](website/index.html)，和 Electron 应用入口分开，不收集个人信息。它还没有发布到 GitHub Pages。合并到 `main` 并把 Pages 的来源设为 GitHub Actions 之后，默认地址才会是 <https://1moc.github.io/souduanju/>。
+
 ## 支持的系统
 
 | 系统 | 架构 | 安装包 |
@@ -126,6 +128,7 @@ npm run build:win
 - [CI](https://github.com/1moc/souduanju/actions/workflows/ci.yml)：拉取请求和 `main` 上运行离线单元测试（Ubuntu 24.04、Windows，Node 20 与 22）。ByteVC2 在拉取请求和手动运行时编译（macOS 15 arm64、macOS 15 Intel、Windows x64）。推送到 `main` 时不再重复编译解码器，以免和发布任务叠在一起。
 - [Build & Release Native Apps](https://github.com/1moc/souduanju/actions/workflows/build-release.yml)：`main` 推送、`v*` 标签和手动运行。任务会计算版本，在 Intel Mac 和 Windows 上编译对应解码器，并在打包用的 `macos-latest` 上编译 Apple Silicon 解码器。随后执行 `npm ci` 和单元测试，用 electron-builder 生成 macOS arm64/x64 与 Windows x64 安装包，连同 `SHA256SUMS.txt` 上传到 Release。单独排队的 `macos-15` Apple Silicon 任务曾因托管 runner 容量被取消，所以 Apple Silicon 解码器改在打包任务里编译。
 - [Live API Verification](https://github.com/1moc/souduanju/actions/workflows/live-verification.yml)：只能手动运行。它会访问真实第三方接口，导入源码和日常提交不会自动触发。
+- [Project website](https://github.com/1moc/souduanju/actions/workflows/pages.yml)：只在 `website/` 或该工作流文件变化时，把静态项目页发布到 GitHub Pages。它不编译客户端，也不上传安装包。只改网站、文档或发布脚本时，版本计算会跳过桌面安装包构建。
 
 还没有旧标签时，`main` 上的普通提交按补丁从 1.0.0 升到 v1.0.1，并且只发布这一次。发布任务用 `GITHUB_TOKEN` 创建的标签不会再启动第二次构建；如果仍出现 `github-actions[bot]` 的标签推送，准备步骤会跳过。手动发布要在 `main` 上运行，不要对着已有标签运行。提交说明中的 `feat:` 会升次版本，`BREAKING CHANGE` 会升主版本。提交说明包含 `[skip release]` 且没有其他需要升版本的提交时，不会再次打包。
 
