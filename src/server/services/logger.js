@@ -43,11 +43,34 @@ class Logger {
     } catch (_) {}
   }
 
+  _redactMessage(message) {
+    return String(message ?? '').replace(
+      /(device_id|install_id|iid|cdid|cookie|device_token|openudid|clientudid)=([^\s,;]+)/gi,
+      '$1=[redacted]'
+    );
+  }
+
+  _redactExtra(extra) {
+    if (!extra || typeof extra !== 'object' || extra instanceof Error) return extra;
+    const sensitive = /^(device_id|install_id|iid|cdid|cookie|device_token|openudid|clientudid|set-cookie)$/i;
+    const walk = (value, key) => {
+      if (sensitive.test(key || '')) return '[redacted]';
+      if (Array.isArray(value)) return value.map(item => walk(item));
+      if (value && typeof value === 'object') {
+        return Object.fromEntries(Object.entries(value).map(([child, item]) => [child, walk(item, child)]));
+      }
+      return value;
+    };
+    return walk(extra);
+  }
+
   _format(level, tag, message, extra) {
     const now = new Date();
     const pad = (n, len = 2) => String(n).padStart(len, '0');
     const ts = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ` +
                `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}.${pad(now.getMilliseconds(), 3)}`;
+    message = this._redactMessage(message);
+    extra = this._redactExtra(extra);
     const prefix = tag ? `[${tag}] ` : '';
     let extraStr = '';
     if (extra !== undefined) {

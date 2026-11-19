@@ -1914,11 +1914,13 @@ const app = createApp({
                   bytevc2Session = window.Bytevc2Stream.start(video, progressiveUrl, Number(errData.duration), bytevc2Fallback);
                 } catch (_) { bytevc2Fallback(); return; }
                 if (!miniPlayer.value) video.play().catch(() => {});
-              } else if (errData?.code === 'EMPTY_RESPONSE' || /返回空响应/.test(errData?.error || '')) {
-                videoErrorMessage.value = '上游接口返回空响应，可能是当前设备鉴权受限；请点击右上角菜单中的“生成新的设备ID”后重试';
-              } else if (errData?.code === 'DEVICE_REGISTRATION_FAILED' || /匿名播放设备注册失败|ERR_NETWORK/i.test(errData?.error || '')) {
-                videoErrorMessage.value = '播放设备注册受阻（ERR_NETWORK）；请检查网络连接、代理软件（Clash/去广告规则）或 DNS 设置';
-                reportClientLog('WARN', '播放器源探测提示: 设备注册受阻（ERR_NETWORK），已展示网络/代理排查指引');
+              } else if (errData?.code === 'EMPTY_RESPONSE' || errData?.code === 'AUTH_REJECTED') {
+                videoErrorMessage.value = errData.error || '上游没有返回可播放的数据。观看记录仍在。反复生成新的设备 ID 不能解决服务端拒绝。';
+              } else if (errData?.code === 'DEVICE_REGISTRATION_FAILED' || /设备注册没有完成|匿名播放设备注册失败/i.test(errData?.error || '')) {
+                videoErrorMessage.value = errData.error || '设备注册没有完成。观看记录没有被清除。';
+                if (/ERR_NETWORK/i.test(errData?.error || '')) {
+                  videoErrorMessage.value += ' 请检查网络连接、代理软件（Clash/去广告规则）或 DNS 设置。';
+                }
               } else if (errData?.code === 'SECURITY_BLOCKED') {
                 videoErrorMessage.value = '视频源地址未通过安全检查；请切换分集重试';
               } else if (errData?.code === 'UNSUPPORTED_BYTEVC2') {

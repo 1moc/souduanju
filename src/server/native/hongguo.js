@@ -663,8 +663,11 @@ function sourceFailure(source, error) {
   const status = Number(error?.status || error?.response?.status || message.match(/HTTP\s+(\d{3})/)?.[1]);
   if (status >= 300 && status <= 599) return { source, code: `HTTP_${status}`, message: `请求失败（HTTP ${status}）` };
   if (code === 'SECURITY_BLOCKED' || code.startsWith('ERR_WEB_MEDIA_')) return { source, code: 'SECURITY_BLOCKED', message: '片源地址被安全校验阻止' };
-  if (code === 'EMPTY_RESPONSE' || error?.emptyResponse || /接口返回空响应/.test(message)) {
-    return { source, code: 'EMPTY_RESPONSE', message: '播放接口空响应，可能是签名或设备鉴权问题' };
+  if (status === 401 || status === 403 || code === 'AUTH_REJECTED' || code === 'REGISTRATION_REJECTED') {
+    return { source, code: 'AUTH_REJECTED', message: '上游拒绝了这次设备授权' };
+  }
+  if (code === 'EMPTY_RESPONSE' || error?.emptyResponse || /返回了空内容|接口返回空响应/.test(message)) {
+    return { source, code: 'EMPTY_RESPONSE', message: '播放接口返回空内容，不是设备 ID 损坏' };
   }
   if (['ECONNABORTED', 'ETIMEDOUT', 'TIMEOUT'].includes(code) || /超时|timeout/i.test(message)) return { source, code: 'TIMEOUT', message: '请求超时' };
   if (['ENOTFOUND', 'EAI_AGAIN', 'ECONNRESET', 'ECONNREFUSED', 'EHOSTUNREACH', 'ENETUNREACH', 'EPIPE', 'ERR_NETWORK', 'ERR_CANCELED'].includes(code)) return { source, code: 'NETWORK_ERROR', message: '网络连接失败，请稍后重试' };

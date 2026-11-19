@@ -952,7 +952,7 @@ test('onVideoError probes stream endpoint on code 4 and displays device registra
   assert.equal(probeRequests.length, 1);
   assert.match(probeRequests[0].url, /\/api\/stream\/vid-123/);
   assert.equal(probeRequests[0].options?.headers?.Range, 'bytes=0-0');
-  assert.match(state.videoErrorMessage.value, /播放设备注册受阻（ERR_NETWORK）/);
+  assert.match(state.videoErrorMessage.value, /匿名播放设备注册失败（ERR_NETWORK）/);
   assert.match(state.videoErrorMessage.value, /Clash\/去广告规则/);
 });
 
@@ -970,15 +970,29 @@ test('onVideoError displays an unsupported ByteVC2 message', async () => {
 
 test('onVideoError guides user to regenerate device ID when upstream returns EMPTY_RESPONSE', async () => {
   const state = client(async url => url.startsWith('/api/stream/')
-    ? { ok: false, status: 500, json: async () => ({ code: 'EMPTY_RESPONSE', error: 'App 接口返回空响应，可能是签名或设备鉴权问题' }) }
+    ? { ok: false, status: 500, json: async () => ({ code: 'EMPTY_RESPONSE', error: '上游接口返回了空内容（HTTP 200，没有正文）。再生成一个设备 ID 不能让服务端开始返回数据。' }) }
     : response({}));
   state.activeSeries.value = { series_id: '1', series_title: '测试短剧' };
   state.activeEpisodes.value = [{ vid: '123', vid_index: 1 }];
   state.activeEpisodeIndex.value = 1;
   state.videoEl.value = { error: { code: 4, message: 'Format error' } };
   await state.onVideoError();
-  assert.match(state.videoErrorMessage.value, /返回空响应/);
-  assert.match(state.videoErrorMessage.value, /生成新的设备ID/);
+  assert.match(state.videoErrorMessage.value, /返回了空内容/);
+  assert.match(state.videoErrorMessage.value, /再生成一个设备 ID 不能/);
+  assert.doesNotMatch(state.videoErrorMessage.value, /生成新的设备ID/);
+});
+
+test('onVideoError keeps authorization refusal distinct from an empty body', async () => {
+  const state = client(async url => url.startsWith('/api/stream/')
+    ? { ok: false, status: 500, json: async () => ({ code: 'AUTH_REJECTED', error: '上游拒绝了这次设备授权。观看记录没有被清除。' }) }
+    : response({}));
+  state.activeSeries.value = { series_id: '1', series_title: '测试短剧' };
+  state.activeEpisodes.value = [{ vid: '123', vid_index: 1 }];
+  state.activeEpisodeIndex.value = 1;
+  state.videoEl.value = { error: { code: 4, message: 'Format error' } };
+  await state.onVideoError();
+  assert.match(state.videoErrorMessage.value, /拒绝了这次设备授权/);
+  assert.doesNotMatch(state.videoErrorMessage.value, /生成新的设备/);
 });
 
 test('ByteVC2 progressive playback starts on detection and stops on switching episodes', async () => {

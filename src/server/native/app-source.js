@@ -9,6 +9,7 @@ const crypto = require('node:crypto');
 const { gzipSync } = require('node:zlib');
 const logger = require('../services/logger');
 const { getPlaybackDevice } = require('./playback-device');
+const { EMPTY_RESPONSE, AUTH_REJECTED } = require('./playback-errors');
 const { deviceKey } = require('./device-session');
 const sm3 = require('./sm3');
 const { PlayerSigner } = require('./argus');
@@ -407,11 +408,15 @@ async function requestJson(url, options, deadline, signal) {
             url = checkedUrl(new URL(response.headers.location, url).href, ['fqnovel.com', 'snssdk.com']);
             continue;
         }
+        if (response.status === 401 || response.status === 403) {
+            throw Object.assign(new Error(AUTH_REJECTED), { code: 'AUTH_REJECTED', status: response.status, logid, requestId });
+        }
         if (response.status !== 200) throw Object.assign(new Error(`App 片源请求失败（HTTP ${response.status}）`), { status: response.status });
         if (typeof response.data === 'string' && !raw.trim()) {
-            throw Object.assign(new Error('App 接口返回空响应，可能是签名或设备鉴权问题'), {
+            throw Object.assign(new Error(EMPTY_RESPONSE), {
                 code: 'EMPTY_RESPONSE',
                 status: response.status,
+                emptyResponse: true,
                 logid, requestId,
             });
         }
