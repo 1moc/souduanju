@@ -26,6 +26,33 @@
     }
   });
 
+  var releasePage = 'https://github.com/1moc/souduanju/releases/latest';
+  var assetLinks = document.querySelectorAll('[data-asset]');
+  if (assetLinks.length && typeof fetch === 'function') {
+    fetch('https://api.github.com/repos/1moc/souduanju/releases/latest', {
+      headers: { Accept: 'application/vnd.github+json' }
+    }).then(function (response) {
+      if (!response.ok) throw new Error('release unavailable');
+      return response.json();
+    }).then(function (release) {
+      var assets = Array.isArray(release.assets) ? release.assets : [];
+      assetLinks.forEach(function (link) {
+        var suffix = link.getAttribute('data-asset');
+        var asset = assets.find(function (item) {
+          return item && item.state === 'uploaded' && typeof item.name === 'string' && item.name.endsWith(suffix);
+        });
+        if (!asset || !asset.browser_download_url) return;
+        link.href = asset.browser_download_url;
+        var caption = link.querySelector('small');
+        if (caption) caption.textContent = asset.name;
+      });
+    }).catch(function () {
+      assetLinks.forEach(function (link) {
+        if (!link.getAttribute('href')) link.href = releasePage;
+      });
+    });
+  }
+
   if (header) {
     var onScroll = function () {
       header.classList.toggle('scrolled', window.scrollY > 4);
